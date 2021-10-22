@@ -1,5 +1,4 @@
 # This example requires the 'members' privileged intents
-from discord import client
 from discord.ext import commands
 import discord
 import random
