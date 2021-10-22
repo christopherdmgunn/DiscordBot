@@ -21,15 +21,31 @@ async def on_ready():
 
 
 @bot.event
-async def on_member_join(member):
-    """Checks when a new member joins and welcomes them to the server with a random greeting"""
-    ## These are Star Wars, Still Game and Shrek in order.
-    listOfGreetings = ["Hello there,", "Weclome,", "OH HELLO THERE,"]
+async def on_member_join(ctx, member):
+    """Checks when a new member joins and welcomes them to the server, Sends a DM to the inbox to read the rules"""
+    # change to just star wars greetings and send a pm to a new member
+
+    # These are Star Wars
+    listOfGreetings = ["Hello there!"]
     guild = member.guild
     if guild.system_channel is not None:
-        result = random.randint(0, 2)
+        result = random.randint(0,0)
         to_send = listOfGreetings[result] + ' {0.mention}!'.format(member)
+        await sendMessage(ctx, member)
         await guild.system_channel.send(to_send)
+
+
+@bot.command()
+async def sendMessage(ctx, member, message='0', *args):
+    """Send a private message to a member"""
+    member = await commands.UserConverter().convert(ctx, member)
+
+    if message == '0':
+        await member.send("Welcome to All is One. "
+                      "Before you can fully join the Discord you will have to go to the rules channel and accept "
+                      "that they have been read.")
+    else:
+        await member.send(message + " " + " ".join(args[:]))
 
 
 @bot.command()
@@ -44,9 +60,10 @@ async def repeat(ctx, times: int, content='repeating...'):
     for i in range(times):
         await ctx.send(content)
 
-
+"""
 @bot.command(pass_context=True)
-async def addrole(ctx, role: discord.Role, member: discord.member = None):
+async def addRole(ctx, role: discord.Role, member: discord.member = None):
+    """"""Command to add roles to users. Only works with non Admin roles.""""""
     member = member or ctx.message.author
     auth = ctx.message.content
     if auth == '!addrole Admin':
@@ -57,10 +74,10 @@ async def addrole(ctx, role: discord.Role, member: discord.member = None):
     else:
         await member.add_roles(role)
 
+"""
 
 f = open("./botToken", "r")
 token = f.readline()
 f.close()
-
 
 bot.run(token)
