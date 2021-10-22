@@ -1,4 +1,5 @@
 # This example requires the 'members' privileged intents
+from discord import client
 from discord.ext import commands
 import discord
 import random
@@ -35,18 +36,6 @@ async def on_member_join(ctx, member):
         await guild.system_channel.send(to_send)
 
 
-@bot.command()
-async def sendMessage(ctx, member, message='0', *args):
-    """Send a private message to a member"""
-    member = await commands.UserConverter().convert(ctx, member)
-
-    if message == '0':
-        await member.send("Welcome to All is One. "
-                      "Before you can fully join the Discord you will have to go to the rules channel and accept "
-                      "that they have been read.")
-    else:
-        await member.send(message + " " + " ".join(args[:]))
-
 
 @bot.command()
 async def hello(ctx):
@@ -75,6 +64,28 @@ async def addRole(ctx, role: discord.Role, member: discord.member = None):
         await member.add_roles(role)
 
 """
+
+@bot.command()
+async def sendMessage(ctx, member, message='0', *args):
+    """Send a private message to a member"""
+    member = await commands.UserConverter().convert(ctx, member)
+
+    if message == '0':
+        await member.send("Welcome to All is One. "
+                      "Before you can fully join the Discord you will have to go to the rules channel and accept "
+                      "that they have been read.")
+    else:
+        await member.send(message + " " + " ".join(args[:]))
+
+
+@bot.event
+async def on_message(message):
+    # Checking if its a dm channel
+    if isinstance(message.channel, discord.DMChannel):
+        # Getting the channel
+        channel = bot.get_channel(780121220661248043)
+        await channel.send(f"{message.author} sent:\n```{message.content}```")
+    # Processing the message so commands will work
 
 f = open("./botToken", "r")
 token = f.readline()
